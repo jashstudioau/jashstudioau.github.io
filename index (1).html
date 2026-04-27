@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jash Studio | Brisbane Photographer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f7f3ee;
+    --warm-white: #faf8f5;
+    --dark: #1a1714;
+    --muted: #7a6f66;
+    --accent: #c4a882;
+    --accent-light: #e8ddd0;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--warm-white);
+    color: var(--dark);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    opacity: 0.6;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 60px;
+    mix-blend-mode: multiply;
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: var(--dark);
+    text-decoration: none;
+    font-style: italic;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--dark);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  .nav-links a:hover { opacity: 1; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 60px 80px;
+    background: var(--warm-white);
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    font-weight: 400;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .hero-desc {
+    margin-top: 32px;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 320px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-cta {
+    margin-top: 48px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .btn-primary {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm-white);
+    background: var(--dark);
+    border: none;
+    padding: 16px 36px;
+    cursor: none;
+    text-decoration: none;
+    transition: background 0.3s, letter-spacing 0.3s;
+  }
+  .btn-primary:hover { background: var(--accent); letter-spacing: 0.32em; }
+
+  .btn-ghost {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+    transition: color 0.3s;
+  }
+  .btn-ghost:hover { color: var(--accent); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    background: var(--accent-light);
+  }
+
+  .hero-img-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .hero-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #e8ddd0 0%, #d4c4b0 40%, #c4a882 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.1em;
+  }
+
+  /* Decorative line */
+  .hero-line {
+    position: absolute;
+    bottom: 80px;
+    right: 60px;
+    writing-mode: vertical-rl;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1.2s forwards;
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1.5s forwards;
+  }
+
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    transform-origin: left;
+    animation: growLine 1s ease 2s forwards;
+    transform: scaleX(0);
+  }
+
+  /* ABOUT SECTION */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 70vh;
+  }
+
+  .about-img {
+    background: linear-gradient(135deg, #d4c4b0 0%, #b8a088 100%);
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
+  }
+
+  .about-img-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    color: rgba(255,255,255,0.5);
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+
+  .about-content {
+    padding: 100px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--cream);
+  }
+
+  .section-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+
+  .about-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 32px;
+  }
+
+  .about-title em { font-style: italic; color: var(--muted); }
+
+  .about-text {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .about-stat-row {
+    display: flex;
+    gap: 48px;
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--accent-light);
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* PORTFOLIO SECTION */
+  .portfolio {
+    padding: 120px 60px;
+    background: var(--warm-white);
+  }
+
+  .portfolio-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 64px;
+  }
+
+  .portfolio-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 300;
+  }
+
+  .portfolio-title em { font-style: italic; color: var(--muted); }
+
+  .portfolio-filter {
+    display: flex;
+    gap: 28px;
+  }
+
+  .filter-btn {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    cursor: none;
+    color: var(--muted);
+    padding: 0;
+    transition: color 0.3s;
+    font-family: var(--sans);
+    font-weight: 300;
+  }
+
+  .filter-btn.active, .filter-btn:hover { color: var(--dark); }
+  .filter-btn.active { border-bottom: 1px solid var(--accent); padding-bottom: 2px; }
+
+  /* MASONRY GRID */
+  .portfolio-grid {
+    columns: 3;
+    column-gap: 20px;
+  }
+
+  .portfolio-item {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+
+  .portfolio-item:nth-child(3n+2) { margin-top: 40px; }
+
+  .portfolio-item-inner {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .port-img {
+    width: 100%;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .port-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,23,20,0.7) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    align-items: flex-end;
+    padding: 24px;
+  }
+
+  .port-info {
+    color: white;
+    transform: translateY(10px);
+    transition: transform 0.4s ease;
+  }
+
+  .port-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.2;
+  }
+
+  .port-loc {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .portfolio-item:hover .port-img { transform: scale(1.04); }
+  .portfolio-item:hover .port-overlay { opacity: 1; }
+  .portfolio-item:hover .port-info { transform: translateY(0); }
+
+  /* Placeholder images via gradient */
+  .img-placeholder {
+    width: 100%;
+    display: block;
+  }
+
+  /* SERVICES */
+  .services {
+    background: var(--dark);
+    padding: 120px 60px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .services-left { position: sticky; top: 120px; }
+
+  .services-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+
+  .services-title em { color: var(--accent); font-style: italic; }
+
+  .services-subtitle {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: rgba(247,243,238,0.5);
+    max-width: 260px;
+  }
+
+  .services-list { display: flex; flex-direction: column; gap: 0; }
+
+  .service-item {
+    border-top: 1px solid rgba(247,243,238,0.1);
+    padding: 36px 0;
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 24px;
+    align-items: start;
+    transition: background 0.3s;
+  }
+
+  .service-item:last-child { border-bottom: 1px solid rgba(247,243,238,0.1); }
+
+  .service-num {
+    font-family: var(--serif);
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-style: italic;
+    padding-top: 4px;
+  }
+
+  .service-name {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--cream);
+    font-style: italic;
+  }
+
+  .service-desc {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: rgba(247,243,238,0.45);
+  }
+
+  .service-price {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--accent);
+    white-space: nowrap;
+    font-style: italic;
+  }
+
+  /* INSTAGRAM */
+  .instagram {
+    padding: 120px 60px;
+    background: var(--cream);
+    text-align: center;
+  }
+
+  .ig-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+
+  .ig-title em { font-style: italic; color: var(--muted); }
+
+  .ig-handle {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: 56px;
+    display: block;
+  }
+
+  .ig-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 48px;
+  }
+
+  .ig-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: relative;
+    cursor: none;
+  }
+
+  .ig-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    display: block;
+  }
+
+  .ig-item:hover .ig-img { transform: scale(1.06); }
+
+  .ig-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26,23,20,0.4);
+    opacity: 0;
+    transition: opacity 0.4s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ig-item:hover .ig-overlay { opacity: 1; }
+
+  .ig-icon {
+    color: white;
+    font-size: 1.4rem;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+
+  .ig-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 3px;
+    transition: color 0.3s;
+  }
+  .ig-cta:hover { color: var(--accent); }
+
+  /* CONTACT */
+  .contact {
+    background: var(--warm-white);
+    padding: 120px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .contact-left {}
+
+  .contact-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 28px;
+  }
+
+  .contact-title em { font-style: italic; color: var(--muted); }
+
+  .contact-text {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 48px;
+  }
+
+  .contact-info { display: flex; flex-direction: column; gap: 16px; }
+
+  .contact-row {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    font-size: 0.8rem;
+  }
+
+  .contact-row-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    min-width: 80px;
+  }
+
+  .contact-row-val { color: var(--dark); }
+  .contact-row-val a { color: var(--dark); text-decoration: none; border-bottom: 1px solid var(--accent-light); }
+
+  /* FORM */
+  .contact-form { display: flex; flex-direction: column; gap: 24px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .form-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--accent-light);
+    padding: 12px 0;
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+  }
+
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--accent-light); }
+
+  textarea.form-input { resize: none; height: 100px; }
+
+  .form-submit {
+    margin-top: 16px;
+    align-self: flex-start;
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm-white);
+    background: var(--dark);
+    border: none;
+    padding: 16px 40px;
+    cursor: none;
+    transition: background 0.3s;
+  }
+  .form-submit:hover { background: var(--accent); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    padding: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .footer-copy {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(247,243,238,0.3);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(247,243,238,0.5);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes growLine {
+    to { transform: scaleX(1); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 24px 30px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 50vh; }
+    .hero-left { padding: 100px 30px 60px; }
+    .about { grid-template-columns: 1fr; }
+    .about-content { padding: 60px 30px; }
+    .portfolio { padding: 80px 30px; }
+    .portfolio-grid { columns: 2; }
+    .portfolio-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+    .services { grid-template-columns: 1fr; padding: 80px 30px; gap: 48px; }
+    .services-left { position: static; }
+    .instagram { padding: 80px 30px; }
+    .ig-grid { grid-template-columns: repeat(3, 1fr); }
+    .contact { grid-template-columns: 1fr; padding: 80px 30px; gap: 60px; }
+    footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 30px; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Jash Studio</a>
+  <ul class="nav-links">
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#instagram">Instagram</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Brisbane, Australia · Est. 2022</p>
+    <h1 class="hero-title">
+      Crafting<br>
+      <em>stories through</em><br>
+      light & shadow
+    </h1>
+    <p class="hero-desc">
+      Timeless photography rooted in emotion. Portraits, events, and lifestyle sessions across Brisbane and beyond.
+    </p>
+    <div class="hero-cta">
+      <a href="#portfolio" class="btn-primary">View Portfolio</a>
+      <a href="#contact" class="btn-ghost">Book a Session</a>
+    </div>
+    <div class="scroll-hint">
+      <span class="scroll-line"></span>
+      Scroll to explore
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <!-- Replace src with your actual hero image -->
+      <div class="hero-img-placeholder">
+        <div style="text-align:center;padding:40px;">
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.4;margin-bottom:16px;display:block;margin-left:auto;margin-right:auto;">
+            <circle cx="30" cy="30" r="28" stroke="white" stroke-width="1.5"/>
+            <circle cx="30" cy="30" r="10" stroke="white" stroke-width="1.5"/>
+            <line x1="30" y1="2" x2="30" y2="10" stroke="white" stroke-width="1.5"/>
+            <line x1="8" y1="14" x2="14" y2="20" stroke="white" stroke-width="1.5"/>
+          </svg>
+          <div style="font-size:0.8rem;letter-spacing:0.1em;">Add your hero image here</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-line">Brisbane · 2024</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-img">
+    <div class="about-img-inner">Add photographer portrait</div>
+  </div>
+  <div class="about-content reveal">
+    <p class="section-label">The Photographer</p>
+    <h2 class="about-title">
+      Where <em>feeling</em><br>meets the frame
+    </h2>
+    <p class="about-text">
+      Hi, I'm Jash — a Brisbane-based photographer with a passion for capturing the in-between moments. The quiet glances, the warm golden light, the laughter that fills a room.
+    </p>
+    <p class="about-text">
+      With an eye trained across Australia's most stunning landscapes and urban spaces, I bring a cinematic, editorial approach to every session — whether it's an intimate portrait or a vibrant event.
+    </p>
+    <div class="about-stat-row">
+      <div>
+        <div class="stat-num">200+</div>
+        <div class="stat-label">Sessions</div>
+      </div>
+      <div>
+        <div class="stat-num">3+</div>
+        <div class="stat-label">Years</div>
+      </div>
+      <div>
+        <div class="stat-num">Brisbane</div>
+        <div class="stat-label">Based</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio" id="portfolio">
+  <div class="portfolio-header reveal">
+    <div>
+      <p class="section-label">Selected Works</p>
+      <h2 class="portfolio-title">The <em>Portfolio</em></h2>
+    </div>
+    <div class="portfolio-filter">
+      <button class="filter-btn active" onclick="filterPortfolio('all', this)">All</button>
+      <button class="filter-btn" onclick="filterPortfolio('portrait', this)">Portraits</button>
+      <button class="filter-btn" onclick="filterPortfolio('lifestyle', this)">Lifestyle</button>
+      <button class="filter-btn" onclick="filterPortfolio('event', this)">Events</button>
+    </div>
+  </div>
+  <div class="portfolio-grid" id="portfolioGrid">
+    <!-- Portfolio items — replace with actual images -->
+    <div class="portfolio-item" data-cat="portrait">
+      <div class="portfolio-item-inner">
+        <svg class="img-placeholder" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="520" fill="#d4c4b0"/>
+          <text x="50%" y="50%" font-family="Georgia" font-style="italic" fill="rgba(255,255,255,0.5)" font-size="14" text-anchor="middle">Portrait — 01</text>
+        </svg>
+        <div class="port-overlay"><div class="port-info"><div class="port-title">Golden Hour</div><div class="port-loc">South Bank, Brisbane</div></div></div>
+      </div>
+    </div>
+    <div class="portfolio-item" data-cat="lifestyle">
+      <div class="portfolio-item-inner">
+        <svg class="img-placeholder" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="300" fill="#c4b09a"/>
+          <text x="50%" y="50%" font-family="Georgia" font-style="italic" fill="rgba(255,255,255,0.5)" font-size="14" text-anchor="middle">Lifestyle — 01</text>
+        </svg>
+        <div class="port-overlay"><div class="port-info"><div class="port-title">Urban Stories</div><div class="port-loc">Fortitude Valley</div></div></div>
+      </div>
+    </div>
+    <div class="portfolio-item" data-cat="event">
+      <div class="portfolio-item-inner">
+        <svg class="img-placeholder" viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="560" fill="#b8a088"/>
+          <text x="50%" y="50%" font-family="Georgia" font-style="italic" fill="rgba(255,255,255,0.5)" font-size="14" text-anchor="middle">Event — 01</text>
+        </svg>
+        <div class="port-overlay"><div class="port-info"><div class="port-title">Celebration</div><div class="port-loc">Brisbane City</div></div></div>
+      </div>
+    </div>
+    <div class="portfolio-item" data-cat="portrait">
+      <div class="portfolio-item-inner">
+        <svg class="img-placeholder" viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="460" fill="#c8b89e"/>
+          <text x="50%" y="50%" font-family="Georgia" font-style="italic" fill="rgba(255,255,255,0.5)" font-size="14" text-anchor="middle">Portrait — 02</text>
+        </svg>
+        <div class="port-overlay"><div class="port-info"><div class="port-title">Natural Light</div><div class="port-loc">New Farm Park</div></div></div>
+      </div>
+    </div>
+    <div class="portfolio-item" data-cat="lifestyle">
+      <div class="portfolio-item-inner">
+        <svg class="img-placeholder" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="500" fill="#d8caba"/>
+          <text x="50%" y="50%" font-family="Georgia" font-style="italic" fill="rgba(255,255,255,0.5)" font-size="14" text-anchor="middle">Lifestyle — 02</text>
+        </svg>
+        <div class="port-overlay"><div class="port-info"><div class="port-title">Morning Calm</div><div class="port-loc">Kangaroo Point</div></div></div>
+      </div>
+    </div>
+    <div class="portfolio-item" data-cat="event">
+      <div class="portfolio-item-inner">
+        <svg class="img-placeholder" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="320" fill="#bca990"/>
+          <text x="50%" y="50%" font-family="Georgia" font-style="italic" fill="rgba(255,255,255,0.5)" font-size="14" text-anchor="middle">Event — 02</text>
+        </svg>
+        <div class="port-overlay"><div class="port-info"><div class="port-title">Together</div><div class="port-loc">Howard Smith Wharves</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-left reveal">
+    <p class="section-label" style="color:var(--accent);">What I Offer</p>
+    <h2 class="services-title">Sessions <em>crafted</em> for you</h2>
+    <p class="services-subtitle">Each package is tailored to your story. Let's create something unforgettable.</p>
+  </div>
+  <div class="services-list reveal">
+    <div class="service-item">
+      <div class="service-num">01</div>
+      <div>
+        <div class="service-name">Portrait Session</div>
+        <div class="service-desc">Individual or couple portraits. 1-2 hours, up to 2 locations around Brisbane. 30+ edited images delivered in an online gallery.</div>
+      </div>
+      <div class="service-price">From $350</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">02</div>
+      <div>
+        <div class="service-name">Lifestyle & Family</div>
+        <div class="service-desc">Candid, relaxed sessions that capture the real moments. Perfect for families and couples. 2-3 hours, 50+ images.</div>
+      </div>
+      <div class="service-price">From $480</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">03</div>
+      <div>
+        <div class="service-name">Event Coverage</div>
+        <div class="service-desc">Birthdays, corporate events, launches, and celebrations. Half or full day options available with same-week turnaround.</div>
+      </div>
+      <div class="service-price">From $700</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">04</div>
+      <div>
+        <div class="service-name">Brand & Creative</div>
+        <div class="service-desc">Elevate your brand with editorial imagery. Content packages for social media, websites and campaigns.</div>
+      </div>
+      <div class="service-price">Custom</div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="instagram" id="instagram">
+  <p class="section-label">Stay Connected</p>
+  <h2 class="ig-title reveal">Follow the <em>journey</em></h2>
+  <a href="https://www.instagram.com/jash.studio.au/" target="_blank" class="ig-handle reveal">@jash.studio.au</a>
+  <div class="ig-grid reveal">
+    <!-- These are placeholder tiles — once you upload images, replace with real ones -->
+    <div class="ig-item">
+      <svg class="ig-img" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="300" fill="#d4c4b0"/></svg>
+      <div class="ig-overlay"><div class="ig-icon">♡</div></div>
+    </div>
+    <div class="ig-item">
+      <svg class="ig-img" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="300" fill="#c4b09a"/></svg>
+      <div class="ig-overlay"><div class="ig-icon">♡</div></div>
+    </div>
+    <div class="ig-item">
+      <svg class="ig-img" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="300" fill="#b8a088"/></svg>
+      <div class="ig-overlay"><div class="ig-icon">♡</div></div>
+    </div>
+    <div class="ig-item">
+      <svg class="ig-img" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="300" fill="#cdbca6"/></svg>
+      <div class="ig-overlay"><div class="ig-icon">♡</div></div>
+    </div>
+    <div class="ig-item">
+      <svg class="ig-img" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="300" fill="#bfae9c"/></svg>
+      <div class="ig-overlay"><div class="ig-icon">♡</div></div>
+    </div>
+  </div>
+  <a href="https://www.instagram.com/jash.studio.au/" target="_blank" class="ig-cta">
+    View on Instagram →
+  </a>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-left reveal">
+    <p class="section-label">Get In Touch</p>
+    <h2 class="contact-title">Let's create something <em>beautiful</em></h2>
+    <p class="contact-text">
+      Ready to book a session or just want to say hello? I'd love to hear from you. Based in Brisbane, available for travel across Queensland and Australia.
+    </p>
+    <div class="contact-info">
+      <div class="contact-row">
+        <span class="contact-row-label">Location</span>
+        <span class="contact-row-val">Brisbane, QLD, Australia</span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-row-label">Instagram</span>
+        <span class="contact-row-val"><a href="https://www.instagram.com/jash.studio.au/" target="_blank">@jash.studio.au</a></span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-row-label">Response</span>
+        <span class="contact-row-val">Within 24–48 hours</span>
+      </div>
+    </div>
+  </div>
+  <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input type="text" class="form-input" placeholder="Jane Smith" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" placeholder="jane@email.com" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Session Type</label>
+      <input type="text" class="form-input" placeholder="Portrait, Family, Event...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tell me about your vision</label>
+      <textarea class="form-input" placeholder="I'd love to hear what you have in mind..."></textarea>
+    </div>
+    <button type="submit" class="form-submit">Send Message</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">Jash Studio</a>
+  <p class="footer-copy">© 2025 Jash Studio · Brisbane, Australia</p>
+  <ul class="footer-links">
+    <li><a href="https://www.instagram.com/jash.studio.au/" target="_blank">Instagram</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursor.style.opacity = '0.5';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      cursor.style.opacity = '1';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+
+  // Portfolio filter
+  function filterPortfolio(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.portfolio-item').forEach(item => {
+      if (cat === 'all' || item.dataset.cat === cat) {
+        item.style.display = '';
+        item.style.opacity = '0';
+        setTimeout(() => item.style.opacity = '1', 50);
+      } else {
+        item.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.portfolio-item').forEach(item => {
+      item.style.transition = 'opacity 0.4s ease';
+    });
+  }
+
+  // Form
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Message Sent ✓';
+    btn.style.background = 'var(--accent)';
+    btn.style.letterSpacing = '0.3em';
+    setTimeout(() => {
+      btn.textContent = 'Send Message';
+      btn.style.background = '';
+      btn.style.letterSpacing = '';
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
